@@ -117,115 +117,118 @@ function SWEP:Think()
 		        self.Idle = 0     
 	    end
 	end
-
-    if self.SetupCharge == 1 then -- Setup Charge
-	    if self.IdleTimer <= CurTime() then
-		    self:SendWeaponAnim(ACT_VM_PULLBACK) -- Charge Idle
-			self.IdleTimer = CurTime() + self.Owner:GetViewModel():SequenceDuration() 
-			self.ReadyCharge = 1
-			timer.Create("TimerForceCharge", 2.5, 1, function()
-                self.ForceCharge = 1
-            end)
-		elseif (not self.Owner:KeyDown(IN_ATTACK2) and self.ReadyCharge == 1) or self.ForceCharge == 1 then
-			self.IdleTimer = CurTime() + 0
-			self.StartCharge = 1
-            self.SetupCharge = 0	
-			self.Owner:EmitSound("swep_scpsl_charge")
-			owner:ApplyEffect("Haste", 2.5, 300)
-			timer.Create("TimerBreakChargeUp", 2.5, 1, function()
-                self.ForceStopCharge = 1
-            end)		
-		end
-	end
+    
+	if SERVER then
+        if self.SetupCharge == 1 then -- Setup Charge
+	        if self.IdleTimer <= CurTime() then
+		        self:SendWeaponAnim(ACT_VM_PULLBACK) -- Charge Idle
+			    self.IdleTimer = CurTime() + self.Owner:GetViewModel():SequenceDuration() 
+			    self.ReadyCharge = 1
+			    timer.Create("TimerForceCharge", 2.5, 1, function()
+                    self.ForceCharge = 1
+                end)
+		    elseif (not self.Owner:KeyDown(IN_ATTACK2) and self.ReadyCharge == 1) or self.ForceCharge == 1 then
+			    self.IdleTimer = CurTime() + 0
+			    self.StartCharge = 1
+                self.SetupCharge = 0	
+			    self.Owner:EmitSound("swep_scpsl_charge")
+			    owner:ApplyEffect("Haste", 2.5, 300)
+			    timer.Create("TimerBreakChargeUp", 2.5, 1, function()
+                    self.ForceStopCharge = 1
+                end)		
+		    end
+	    end
 	
-	if self.ReadyCharge == 1 or self.ForceCharge == 1 then -- Forward Charge and Swing
-	    if self.IdleTimer <= CurTime() then
-		    self:SendWeaponAnim(ACT_VM_HAULBACK)		
-		    self.IdleTimer = CurTime() + self.Owner:GetViewModel():SequenceDuration()
-			self.Owner:ConCommand("+forward")
-			self.Owner:ConCommand("+speed")
-		end
+	
+	    if self.ReadyCharge == 1 or self.ForceCharge == 1 then -- Forward Charge and Swing
+	        if self.IdleTimer <= CurTime() then
+		        self:SendWeaponAnim(ACT_VM_HAULBACK)		
+		        self.IdleTimer = CurTime() + self.Owner:GetViewModel():SequenceDuration()
+			    self.Owner:ConCommand("+forward")
+			    self.Owner:ConCommand("+speed")
+		    end
 		
-		self.Charging = 1
+		    self.Charging = 1
 	    
-		if self.Owner:KeyPressed(IN_ATTACK) or self.ForceStopCharge == 1 then
+		    if self.Owner:KeyPressed(IN_ATTACK) or self.ForceStopCharge == 1 then
 		
-		    self.Owner:ConCommand("-forward")
-	        self.Owner:ConCommand("-speed")
+		        self.Owner:ConCommand("-forward")
+	            self.Owner:ConCommand("-speed")
 			
-			owner:SoftRemoveEffect("Haste")
+			    owner:SoftRemoveEffect("Haste")
 			
-			self.ForceStopCharge = 0
-			self.StartCharge = 0	
-			self.Idle = 0
-			self.ReadyCharge = 0
-			self.ForceCharge = 0
-			self.Charging = 0
-			timer.Remove("TimerBreakChargeUp")
-			timer.Remove("TimerForceCharge")
+			    self.ForceStopCharge = 0
+			    self.StartCharge = 0	
+			    self.Idle = 0
+			    self.ReadyCharge = 0
+			    self.ForceCharge = 0
+			    self.Charging = 0
+			    timer.Remove("TimerBreakChargeUp")
+			    timer.Remove("TimerForceCharge")
 		
-			if self:GetOwner():GetAmmoCount(self.Primary.Ammo) <= 2 then -- Decide attack sequence
-			    self:SendWeaponAnim(ACT_VM_MISSCENTER)	
-                self.IdleTimer = CurTime() + self.Owner:GetViewModel():SequenceDuration()
+			    if self:GetOwner():GetAmmoCount(self.Primary.Ammo) <= 2 then -- Decide attack sequence
+			        self:SendWeaponAnim(ACT_VM_MISSCENTER)	
+                    self.IdleTimer = CurTime() + self.Owner:GetViewModel():SequenceDuration()
+				    -- PrintMessage(HUD_PRINTTALK, "SWING!")
+			    	self.Owner:ConCommand("-forward")
+				    self.Owner:ConCommand("-speed")	
+			    else
+		    	    self:SendWeaponAnim(ACT_VM_SWINGHARD)	
+                    self.IdleTimer = CurTime() + self.Owner:GetViewModel():SequenceDuration()
 				-- PrintMessage(HUD_PRINTTALK, "SWING!")
-				self.Owner:ConCommand("-forward")
-				self.Owner:ConCommand("-speed")	
-			else
-			    self:SendWeaponAnim(ACT_VM_SWINGHARD)	
-                self.IdleTimer = CurTime() + self.Owner:GetViewModel():SequenceDuration()
-				-- PrintMessage(HUD_PRINTTALK, "SWING!")
-				self.Owner:ConCommand("-forward")
-				self.Owner:ConCommand("-speed")	
-                self.Owner:EmitSound("swep_scpsl_chargeswing")				
-			end
+		    		self.Owner:ConCommand("-forward")
+		    		self.Owner:ConCommand("-speed")	
+                    self.Owner:EmitSound("swep_scpsl_chargeswing")				
+		    	end
 			
-			self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration())
+		    	self:SetNextPrimaryFire(CurTime() + self.Owner:GetViewModel():SequenceDuration())
 			
 
-            timer.Create("TimerHitChargeWhen", self.SecondaryHitTime, 1, function() -- Impact Timer
+                timer.Create("TimerHitChargeWhen", self.SecondaryHitTime, 1, function() -- Impact Timer
 			
-			    self.Owner:RemoveAmmo(2, "JailbirdDurability")
+			        self.Owner:RemoveAmmo(2, "JailbirdDurability")
 			
-	            local tr = util.TraceLine( {
-		            start = owner:GetShootPos(),
-		            endpos = owner:GetShootPos() + owner:GetAimVector() * self.HitDistance,
-		            filter = owner,
-		            mask = MASK_SHOT_HULL
-	            } )
-	            if ( !IsValid( tr.Entity ) ) then
-		            tr = util.TraceHull( {
-			        start = owner:GetShootPos(),
-			        endpos = owner:GetShootPos() + owner:GetAimVector() * self.HitDistance,
-			        filter = owner,
-			        mins = Vector( -10, -10, -8 ),
-			        maxs = Vector( 10, 10, 8 ),
-		            mask = MASK_SHOT_HULL
-		            } )
-	            end
-	            if SERVER then
-				    self.Owner:SetAnimation( PLAYER_ATTACK1 )
-				    if tr.Entity:IsPlayer() then
-			            tr.Entity:ApplyEffect("Discharge", 2, 50, 1)
-					    tr.Entity:ApplyEffect("Hindered", 3, 80)
-			        end
-	                if tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsNextBot() then
-		                local dmginfo = DamageInfo()
+	                local tr = util.TraceLine( {
+		                start = owner:GetShootPos(),
+		                endpos = owner:GetShootPos() + owner:GetAimVector() * self.HitDistance,
+		                filter = owner,
+		                mask = MASK_SHOT_HULL
+	                } )
+	                if ( !IsValid( tr.Entity ) ) then
+		                tr = util.TraceHull( {
+		    	        start = owner:GetShootPos(),
+		    	        endpos = owner:GetShootPos() + owner:GetAimVector() * self.HitDistance,
+		    	        filter = owner,
+		    	        mins = Vector( -10, -10, -8 ),
+		    	        maxs = Vector( 10, 10, 8 ),
+		                mask = MASK_SHOT_HULL
+		                } )
+	                end
+	                if SERVER then
+		    		    self.Owner:SetAnimation( PLAYER_ATTACK1 )
+		    		    if tr.Entity:IsPlayer() then
+		    	            tr.Entity:ApplyEffect("Discharge", 2, 50, 1)
+			    		    tr.Entity:ApplyEffect("Hindered", 3, 80)
+			            end
+	                    if tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsNextBot() then
+		                    local dmginfo = DamageInfo()
 			            
-                        dmginfo:SetDamage(200)
-                        dmginfo:SetAttacker(self.Owner)
-                        dmginfo:SetInflictor(self)
-                        dmginfo:SetDamageType(DMG_DISSOLVE)
-                        tr.Entity:TakeDamageInfo(dmginfo)
-				        self:EmitSound("swep_scpsl_hit")
+                            dmginfo:SetDamage(200)
+                            dmginfo:SetAttacker(self.Owner)
+                            dmginfo:SetInflictor(self)
+                            dmginfo:SetDamageType(DMG_DISSOLVE)
+                            tr.Entity:TakeDamageInfo(dmginfo)
+			    	        self:EmitSound("swep_scpsl_hit")
 						
-						local effect = EffectData()
-		                effect:SetOrigin(tr.HitPos)
-		                effect:SetNormal( tr.HitNormal )
-		                util.Effect("ElectricSpark", effect) 
-				        util.Effect("ManhackSparks", effect)
-		            end
-	            end        
-            end)			
+			    			local effect = EffectData()
+		                    effect:SetOrigin(tr.HitPos)
+		                    effect:SetNormal( tr.HitNormal )
+		                    util.Effect("ElectricSpark", effect) 
+				            util.Effect("ManhackSparks", effect)
+		                end
+	                end        
+                end)			
+	    	end
 		end
 	end
 end
