@@ -9,7 +9,7 @@
 
 ## 🔽 Credits
 - Viewmodels, Swep Lua: **Craft_Pig**
-Lua assistance, SEF Base: **Aaron**
+- Lua assistance, SEF Base: **Aaron**
 - Assets: **Northwood Studios**
 
 ## 🔽 Disclaimers
