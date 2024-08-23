@@ -1,0 +1,35 @@
+//if you don't know what a parameter does, visit:
+//https://developer.valvesoftware.com/wiki/$phong
+"VertexLitGeneric"
+{
+    "$basetexture" "models/weapons/sweps/scpsl/jailbird/Mat_Jailbird_rgb"
+    "$bumpmap" "models/weapons/sweps/scpsl/jailbird/Mat_Jailbird_n"
+    "$phongexponenttexture" "models/weapons/sweps/scpsl/jailbird/Mat_Jailbird_e"
+
+    "$color2" "[.5 .5 .5]"
+    "$blendtintbybasealpha" "1"
+
+    "$phong" "1"
+    "$phongboost" "1"
+    "$phongfresnelranges" "[0.25 0.5 2]"
+    "$phongalbedotint" "0"
+
+    //rimlight doesn't properly show in hlmv, make sure you're changing these values in game
+    "$rimlight" "1"
+    "$rimlightexponent" "10"
+    "$rimmask" "1"
+    "$rimlightboost" "0"
+
+    "$normalmapalphaenvmapmask" "1"
+    "$envmapfresnel" "1"
+    "$envmap" "env_cubemap"
+    "$envmaptint" "[0.04 0.04 0.04]"
+	
+	"$emissiveBlendEnabled" "1"
+	"$emissiveBlendTexture" "models/weapons/sweps/scpsl/null"
+	"$emissiveBlendBaseTexture" "models/weapons/sweps/scpsl/jailbird/Mat_Jailbird_Emission"
+	"$emissiveBlendFlowTexture" "models/weapons/sweps/scpsl/null"
+	"$emissiveBlendTint" "[1 1 1]"
+	"$emissiveBlendStrength" "10"
+	"$emissiveBlendScrollVector" "[0.0]"
+}
