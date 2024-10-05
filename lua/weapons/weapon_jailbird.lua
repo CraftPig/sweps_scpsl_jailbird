@@ -310,7 +310,7 @@ function SWEP:PrimaryAttack()
                 -- tr.Entity:TakeDamageInfo(dmginfo)
 				
 				-- self:EmitSound("swep_scpsl_hit")
-	        if tr.Entity:IsPlayer() or tr.Entity:IsNPC() or tr.Entity:IsNextBot() then
+	        if ( SERVER and IsValid( tr.Entity ) and ( tr.Entity:IsNPC() or tr.Entity:IsPlayer() or tr.Entity:Health() > 0 ) ) then
                 dmginfo:SetDamage(50)
                 dmginfo:SetAttacker(self.Owner)
                 dmginfo:SetInflictor(self)

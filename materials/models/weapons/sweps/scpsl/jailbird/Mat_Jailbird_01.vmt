@@ -2,28 +2,35 @@
 //https://developer.valvesoftware.com/wiki/$phong
 "VertexLitGeneric"
 {
-    "$basetexture" "models/weapons/sweps/scpsl/jailbird/Mat_Jailbird_rgb"
-    "$bumpmap" "models/weapons/sweps/scpsl/jailbird/Mat_Jailbird_n"
-    "$phongexponenttexture" "models/weapons/sweps/scpsl/jailbird/Mat_Jailbird_e"
+    "$basetexture" "models/weapons/sweps/scpsl/jailbird/Mat_Jailbird_01_rgb"
+    "$bumpmap" "models/weapons/sweps/scpsl/jailbird/Mat_Jailbird_01_n"
+    "$phongexponenttexture" "models/weapons/sweps/scpsl/jailbird/Mat_Jailbird_01_e"
 
-    "$color2" "[.5 .5 .5]"
-    "$blendtintbybasealpha" "1"
-
-    "$phong" "1"
+    //----------------------------------------------------------------------------------------------
+    "$color2" "[.2 .2 .2]"                                     //do not touch this
+    "$blendtintbybasealpha" "1"                             //do not touch this
+	//----------------------------------------------------------------------------------------------
+	
+	"$phong" "1"
     "$phongboost" "1"
-    "$phongfresnelranges" "[0.5 0.5 0.5]"
-    "$phongalbedotint" "0"
-
-    //rimlight doesn't properly show in hlmv, make sure you're changing these values in game
+    "$phongalbedotint" "1"
+    "$phongalbedoboost" "10"                                //toy around with this
+    "$phongfresnelranges" "[1 2 2]"
+	
+	//----------------------------------------------------------------------------------------------
+	
+	//rimlight doesn't properly show in hlmv, make sure you're changing these values in game
     "$rimlight" "1"
     "$rimlightexponent" "100"
     "$rimmask" "1"
     "$rimlightboost" "5"
-
+	
+	//----------------------------------------------------------------------------------------------
+	
     "$normalmapalphaenvmapmask" "1"
     "$envmapfresnel" "1"
     "$envmap" "env_cubemap"
-    "$envmaptint" "[0.05 0.05 0.05]"
+    "$envmaptint" "[0.02 0.02 0.03]"
 	
 	"$emissiveBlendEnabled" "1"
 	"$emissiveBlendTexture" "models/weapons/sweps/scpsl/null"
